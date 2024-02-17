@@ -3,7 +3,7 @@ export type TTag = {
   name: string;
   isDeleted: boolean;
 };
-export type TDetail = {
+export type TDetails = {
   level: 'Beginner' | 'Intermediate' | 'Advanced';
   description: string;
 };
@@ -18,5 +18,5 @@ export type TCourse = {
   language: string;
   provider: string;
   durationInWeeks: number;
-  details: TDetail[];
+  details: TDetails;
 };
