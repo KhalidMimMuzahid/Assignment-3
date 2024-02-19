@@ -12,4 +12,9 @@ router.post(
   validateRequest(courseValidation.createCourseValidationSchemaByZod),
   courseControllers.createCourse,
 );
+router.put(
+  '/:courseId',
+  validateRequest(courseValidation.updateCourseValidationSchemaByZod),
+  courseControllers.updateCourse,
+);
 export const courseRoutes = router;

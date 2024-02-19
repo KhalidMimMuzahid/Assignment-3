@@ -15,6 +15,17 @@ const createCourse: RequestHandler = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const updateCourse: RequestHandler = catchAsync(async (req, res) => {
+  const result = await courseServices.createCourseIntoDB(req.body);
+
+  //   send response
+  sendResponse(res, {
+    statusCode: 201,
+    success: true,
+    message: 'Course created successfully',
+    data: result,
+  });
+});
 // const getAllCategory: RequestHandler = catchAsync(async (req, res) => {
 //   const result = await categoryServices.getAllCategoryFromDB();
 
@@ -28,5 +39,5 @@ const createCourse: RequestHandler = catchAsync(async (req, res) => {
 // });
 export const courseControllers = {
   createCourse,
-  //   getAllCategory,
+  updateCourse,
 };
