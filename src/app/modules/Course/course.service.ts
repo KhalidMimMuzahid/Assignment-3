@@ -3,7 +3,7 @@ import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
 import { TCourse, TDetails } from './course.interface';
 import { Course } from './course.model';
-import { dateDifferenceInWeeks } from './course.utils';
+import { dateDifferenceInWeeks, generateQueryObject } from './course.utils';
 import mongoose from 'mongoose';
 
 const createCourseIntoDB = async (payload: TCourse) => {
@@ -118,48 +118,16 @@ const updateCourseIntoDB = async (_id: string, payload: Partial<TCourse>) => {
 };
 const getAllCoursesFromDB = async (query: Record<string, any>) => {
   // console.log({ query });
-  const queryObject: any = { ...query };
-  const excludeFields = [
-    'minPrice',
-    'maxPrice',
-    'level',
-    'tags',
-    'durationInWeeks',
-    'page',
-    'limit',
-    'sortBy',
-    'sortOrder',
-  ];
-  excludeFields?.forEach((each) => delete queryObject[each]);
-  // const minPrice = query?.minPrice;
-  // const maxPrice = query?.maxPrice;
-  if (query?.minPrice)
-    queryObject['price'] = { $gte: parseFloat(query?.minPrice) };
-  if (query?.maxPrice) {
-    if (queryObject?.price) {
-      queryObject['price.$gte'] = parseFloat(query?.maxPrice);
-    } else {
-      queryObject['price'] = { $lte: query?.maxPrice };
-    }
-  }
-  // const tags = query?.tags;
-  // const level = query?.level;
-  // const durationInWeeks = query?.durationInWeeks;
-  if (query?.level) queryObject['details.level'] = query?.level;
-  if (query?.tags) queryObject['tags.name'] = query?.tags;
-  if (query?.durationInWeeks)
-    queryObject['durationInWeeks'] = parseFloat(query?.durationInWeeks);
+  const queryObject = generateQueryObject(query);
 
-  // const startDate = query?.startDate;
-  // const endDate = query?.endDate;
-  // const language = query?.language;
-  // const provider = query?.provider;
-  console.log({ queryObject });
-  const page = query?.page || 1;
-  const limit = query?.limit || 10;
+  const page = parseInt(query?.page) || 1;
+  const limit = parseInt(query?.limit) || 10;
   const sortBy = query?.sortBy || 'startDate';
   const sortOrder = query?.sortOrder === 'asc' ? 1 : -1;
-  const result = await Course.find(queryObject);
+  const result = await Course.find(queryObject)
+    .sort({ [sortBy]: sortOrder })
+    .skip((page - 1) * limit)
+    .limit(limit);
   return result;
 };
 
