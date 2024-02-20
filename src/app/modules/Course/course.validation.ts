@@ -60,8 +60,8 @@ const updateCourseValidationSchemaByZod = z.object({
     provider: z.string().optional(),
     details: z
       .object({
-        level: z.enum(['Beginner', 'Intermediate', 'Advanced']),
-        description: z.string(),
+        level: z.enum(['Beginner', 'Intermediate', 'Advanced']).optional(),
+        description: z.string().optional(),
       })
       .optional(),
   }),

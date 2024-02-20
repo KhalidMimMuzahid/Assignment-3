@@ -1,9 +1,12 @@
 import { Schema, model } from 'mongoose';
 import { TCourse, TDetails, TTag } from './course.interface';
-const tagSchema = new Schema<TTag>({
-  name: { type: String, required: true },
-  isDeleted: { type: Boolean, default: false },
-});
+const tagSchema = new Schema<TTag>(
+  {
+    name: { type: String, required: true },
+    isDeleted: { type: Boolean, default: false },
+  },
+  { _id: false },
+);
 const detailSchema = new Schema<TDetails>({
   level: {
     type: String,
@@ -22,7 +25,7 @@ const courseSchema = new Schema<TCourse>({
   language: { type: String, required: true },
   provider: { type: String, required: true },
   durationInWeeks: { type: Number, required: true },
-  details: [detailSchema],
+  details: detailSchema,
 });
 
 courseSchema.pre('save', function () {

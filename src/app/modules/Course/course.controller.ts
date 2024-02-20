@@ -3,6 +3,7 @@ import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 // import httpStatus from 'http-status';
 import { courseServices } from './course.service';
+import httpStatus from 'http-status';
 
 const createCourse: RequestHandler = catchAsync(async (req, res) => {
   const result = await courseServices.createCourseIntoDB(req.body);
@@ -16,13 +17,14 @@ const createCourse: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 const updateCourse: RequestHandler = catchAsync(async (req, res) => {
-  const result = await courseServices.createCourseIntoDB(req.body);
+  const { courseId } = req.params;
+  const result = await courseServices.updateCourseIntoDB(courseId, req.body);
 
   //   send response
   sendResponse(res, {
-    statusCode: 201,
+    statusCode: httpStatus.OK,
     success: true,
-    message: 'Course created successfully',
+    message: 'Course updated successfully',
     data: result,
   });
 });
