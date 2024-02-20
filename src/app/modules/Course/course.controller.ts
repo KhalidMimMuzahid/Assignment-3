@@ -28,18 +28,20 @@ const updateCourse: RequestHandler = catchAsync(async (req, res) => {
     data: result,
   });
 });
-// const getAllCategory: RequestHandler = catchAsync(async (req, res) => {
-//   const result = await categoryServices.getAllCategoryFromDB();
+const getAllCourses: RequestHandler = catchAsync(async (req, res) => {
+  const payload: object = req?.query;
+  const result = await courseServices.getAllCoursesFromDB(payload);
 
-//   //   send response
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: 'Categories retrieved successfully',
-//     data: result,
-//   });
-// });
+  //   send response
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Courses retrieved successfully',
+    data: result,
+  });
+});
 export const courseControllers = {
   createCourse,
   updateCourse,
+  getAllCourses,
 };

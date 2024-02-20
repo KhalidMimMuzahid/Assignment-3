@@ -12,6 +12,7 @@ router.post(
   validateRequest(courseValidation.createCourseValidationSchemaByZod),
   courseControllers.createCourse,
 );
+router.get('/', courseControllers.getAllCourses);
 router.put(
   '/:courseId',
   validateRequest(courseValidation.updateCourseValidationSchemaByZod),

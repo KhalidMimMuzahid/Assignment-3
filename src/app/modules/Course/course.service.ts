@@ -116,12 +116,55 @@ const updateCourseIntoDB = async (_id: string, payload: Partial<TCourse>) => {
     throw new AppError(httpStatus.BAD_REQUEST, 'failed to update course');
   }
 };
-// const getAllCategoryFromDB = async () => {
-//   const result = await Category.find();
-//   return result;
-// };
+const getAllCoursesFromDB = async (query: Record<string, any>) => {
+  // console.log({ query });
+  const queryObject: any = { ...query };
+  const excludeFields = [
+    'minPrice',
+    'maxPrice',
+    'level',
+    'tags',
+    'durationInWeeks',
+    'page',
+    'limit',
+    'sortBy',
+    'sortOrder',
+  ];
+  excludeFields?.forEach((each) => delete queryObject[each]);
+  // const minPrice = query?.minPrice;
+  // const maxPrice = query?.maxPrice;
+  if (query?.minPrice)
+    queryObject['price'] = { $gte: parseFloat(query?.minPrice) };
+  if (query?.maxPrice) {
+    if (queryObject?.price) {
+      queryObject['price.$gte'] = parseFloat(query?.maxPrice);
+    } else {
+      queryObject['price'] = { $lte: query?.maxPrice };
+    }
+  }
+  // const tags = query?.tags;
+  // const level = query?.level;
+  // const durationInWeeks = query?.durationInWeeks;
+  if (query?.level) queryObject['details.level'] = query?.level;
+  if (query?.tags) queryObject['tags.name'] = query?.tags;
+  if (query?.durationInWeeks)
+    queryObject['durationInWeeks'] = parseFloat(query?.durationInWeeks);
+
+  // const startDate = query?.startDate;
+  // const endDate = query?.endDate;
+  // const language = query?.language;
+  // const provider = query?.provider;
+  console.log({ queryObject });
+  const page = query?.page || 1;
+  const limit = query?.limit || 10;
+  const sortBy = query?.sortBy || 'startDate';
+  const sortOrder = query?.sortOrder === 'asc' ? 1 : -1;
+  const result = await Course.find(queryObject);
+  return result;
+};
 
 export const courseServices = {
   createCourseIntoDB,
   updateCourseIntoDB,
+  getAllCoursesFromDB,
 };
